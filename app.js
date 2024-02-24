@@ -1,11 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/userDB");
+mongoose.connect(process.env.MONGODB_URI);
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 const jwt = require("jsonwebtoken");
-const secretKey = "MySecretAuthenticationKey";
+const secretKey = process.env.JWT_SECRET;
 
 // Authentication
 
@@ -17,7 +18,6 @@ app.post("/login", function (req, res) {
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers["authorization"];
-  console.log(authHeader);
   const token = authHeader && authHeader.split(" ")[1];
   if (token == null) return res.sendStatus(401);
 
@@ -123,7 +123,7 @@ app.delete("/user/:id", authenticateToken, function (req, res) {
     });
 });
 
-//Endpoint for liking other's posts
+//Endpoint for liking other's profile
 app.post("/like/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid user ID");
@@ -144,7 +144,7 @@ app.post("/like/:id", authenticateToken, function (req, res) {
 });
 
 //Retrieving users in ascending order of points
-app.get("/ranks", authenticateToken, function (req, res) {
+app.get("/points", authenticateToken, function (req, res) {
   User.find({})
     .sort("points")
     .then(function (users) {
