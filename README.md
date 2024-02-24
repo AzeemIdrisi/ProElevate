@@ -3,6 +3,14 @@
 
 The ProElevate Job Listing API allows you to manage users and job listings. Only authenticated users can perform CRUD operations on both users and job listings.
 
+## Requirements
+- Node.js
+- Express.js
+- Mongoose (MongoDB)
+- JWT
+- DotEnv
+- Body Parser
+
 ## Getting Started
 
 To get started with the API, follow these steps:
