@@ -4,6 +4,29 @@ const mongoose = require("mongoose");
 mongoose.connect("mongodb://127.0.0.1:27017/userDB");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
+const jwt = require("jsonwebtoken");
+const secretKey = "MySecretAuthenticationKey";
+
+// Authentication
+
+app.post("/login", function (req, res) {
+  const user = new User(req.body);
+  const accessToken = jwt.sign({ user }, secretKey, { expiresIn: "1h" });
+  res.json({ accessToken: accessToken });
+});
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  console.log(authHeader);
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+
+  jwt.verify(token, secretKey, function (err, user) {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+}
 
 // API 1 for Users
 
@@ -22,7 +45,7 @@ const userSchema = new mongoose.Schema({
 const User = new mongoose.model("User", userSchema);
 
 // Create User
-app.post("/user", function (req, res) {
+app.post("/user", authenticateToken, function (req, res) {
   const user = new User(req.body);
 
   user
@@ -36,7 +59,7 @@ app.post("/user", function (req, res) {
 });
 
 // Read All Users
-app.get("/user", function (req, res) {
+app.get("/user", authenticateToken, function (req, res) {
   User.find({})
     .then(function (users) {
       res.status(200).send(users);
@@ -47,7 +70,7 @@ app.get("/user", function (req, res) {
 });
 
 // Read Single User
-app.get("/user/:id", function (req, res) {
+app.get("/user/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid user ID");
   }
@@ -65,7 +88,7 @@ app.get("/user/:id", function (req, res) {
 });
 
 // Update User
-app.put("/user/:id", function (req, res) {
+app.put("/user/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid user ID");
   }
@@ -83,7 +106,7 @@ app.put("/user/:id", function (req, res) {
 });
 
 //Delete User
-app.delete("/user/:id", function (req, res) {
+app.delete("/user/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid user ID");
   }
@@ -101,7 +124,7 @@ app.delete("/user/:id", function (req, res) {
 });
 
 //Endpoint for liking other's posts
-app.post("/like/:id", function (req, res) {
+app.post("/like/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid user ID");
   }
@@ -121,7 +144,7 @@ app.post("/like/:id", function (req, res) {
 });
 
 //Retrieving users in ascending order of points
-app.get("/ranks", function (req, res) {
+app.get("/ranks", authenticateToken, function (req, res) {
   User.find({})
     .sort("points")
     .then(function (users) {
@@ -146,7 +169,7 @@ const jobSchema = new mongoose.Schema({
 const Job = new mongoose.model("Job", jobSchema);
 
 // Create Job
-app.post("/job", function (req, res) {
+app.post("/job", authenticateToken, function (req, res) {
   const job = new Job(req.body);
 
   job
@@ -160,7 +183,7 @@ app.post("/job", function (req, res) {
 });
 
 // Read All Jobs
-app.get("/job", function (req, res) {
+app.get("/job", authenticateToken, function (req, res) {
   Job.find({})
     .then(function (job) {
       res.status(200).send(job);
@@ -171,7 +194,7 @@ app.get("/job", function (req, res) {
 });
 
 // Single Read
-app.get("/job/:id", function (req, res) {
+app.get("/job/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid job ID");
   }
@@ -189,7 +212,7 @@ app.get("/job/:id", function (req, res) {
 });
 
 // Update
-app.put("/job/:id", function (req, res) {
+app.put("/job/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid job ID");
   }
@@ -207,7 +230,7 @@ app.put("/job/:id", function (req, res) {
 });
 
 //Delete
-app.delete("/job/:id", function (req, res) {
+app.delete("/job/:id", authenticateToken, function (req, res) {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid job ID");
   }
@@ -225,7 +248,7 @@ app.delete("/job/:id", function (req, res) {
 });
 
 // Apply for job
-app.post("/job/apply/:userID/:jobID", function (req, res) {
+app.post("/job/apply/:userID/:jobID", authenticateToken, function (req, res) {
   // Validating IDs
   if (!mongoose.isValidObjectId(req.params.jobID)) {
     return res.status(400).send("Invalid job ID");
