@@ -61,61 +61,61 @@ To get started with the API, follow these steps:
 
 ### Users
 
-- **POST /user**
+- **POST `/user`**
   - Description: Creates a new user.
   - Request body: `{ "name": "Azeem Idrisi", "githubLink":"https://github.com/AzeemIdrisi/"}`
   - Authentication: Required
 
-- **GET /user**
+- **GET `/user`**
   - Description: Retrieves all users.
   - Authentication: Required
 
-- **GET /user/:id**
+- **GET `/user/:id`**
   - Description: Retrieves a single user by ID.
   - Authentication: Required
 
-- **PUT /user/:id**
+- **PUT `/user/:id`**
   - Description: Updates a user by ID.
   - Request body: `{ "name": "Updated Name" ,"githubLink":"https://github.com/UPDATED/"}`
   - Authentication: Required
 
-- **DELETE /user/:id**
+- **DELETE `/user/:id`**
   - Description: Deletes a user by ID.
   - Authentication: Required
 
-- **POST /like/:id**
+- **POST `/like/:id`**
   - Description: Like a user by ID and increase their point.
   - Authentication: Required
 
-- **GET /points**
+- **GET `/points`**
   - Description: Retrieve users in ascending order of points.
   - Authentication: Required
 
 ### Jobs
 
-- **POST /job**
+- **POST `/job`**
   - Description: Creates a new job listing.
   - Request body: `{ "date": "YYYY-MM-DD", "link": "Job Site Link", title:"Job Title" }`
   - Authentication: Required
 
-- **GET /job**
+- **GET `/job`**
   - Description: Retrieves all job listings.
   - Authentication: Required
 
-- **GET /job/:id**
+- **GET `/job/:id`**
   - Description: Retrieves a single job listing by ID.
   - Authentication: Required
 
-- **PUT /job/:id**
+- **PUT `/job/:id`**
   - Description: Updates a job listing by ID.
   - Request body: `{ "title": "Updated Title","link":"Updated Link" }`
   - Authentication: Required
 
-- **DELETE /job/:id**
+- **DELETE `/job/:id`**
   - Description: Deletes a job listing by ID.
   - Authentication: Required
 
-- **POST /job/apply/:userID/:jobID**
+- **POST `/job/apply/:userID/:jobID`**
   - Description: Adds an existing user to job applicants list.
   - Authentication: Required
 
