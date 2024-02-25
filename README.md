@@ -45,9 +45,12 @@ To get started with the API, follow these steps:
 
 ## API Endpoints
 
-The request method is `application/x-www-form-urlencoded`.
-Examples are shown in JSON for better readability.
-Postman is recommended for testing.
+> [!IMPORTANT]  
+> The request method is `application/x-www-form-urlencoded`.
+> Examples are shown in JSON for better readability.
+
+> [!TIP]
+> Postman is recommended for testing.
 
 ### Authentication (Required to proceed)
 
