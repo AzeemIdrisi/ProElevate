@@ -11,6 +11,12 @@ const secretKey = process.env.JWT_SECRET;
 // Authentication
 
 app.post("/login", function (req, res) {
+  email = req.body.email;
+  password = req.body.password;
+
+  if (!email) res.status(400).send("Provide a valid email.");
+  if (!password) res.status(400).send("Provide a valid password.");
+
   const user = new User(req.body);
   const accessToken = jwt.sign({ user }, secretKey, { expiresIn: "1h" });
   res.json({ accessToken: accessToken });
